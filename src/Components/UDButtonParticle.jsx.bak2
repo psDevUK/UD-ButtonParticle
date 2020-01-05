@@ -1,0 +1,71 @@
+import React from 'react';
+import ParticleEffectButton from 'react-particle-effect-button';
+import Ripples from 'react-ripples'
+class UDButtonParticle extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      hidden: false
+    }
+  }
+
+  componentWillMount() {
+    this.pubSubToken = PubSub.subscribe(this.props.id, this.onIncomingEvent.bind(this));
+  }
+
+  componentWillUnmount() {
+    PubSub.unsubscribe(this.pubSubToken);
+  }
+
+  onIncomingEvent(eventName, event) {
+    if (event.type === "requestState") {
+      var data = {
+        attributes: {
+          hidden: this.state.hidden,
+        }
+      }
+      UniversalDashboard.post(`/api/internal/component/element/sessionState/${event.requestId}`, data);
+    }
+    else if (event.type === "setState") {
+      this.setState(event.state.attributes);
+    }
+    else if (event.type === "removeElement") {
+      this.setState({
+        hidden: true
+      });
+    }
+  }
+
+  handleClick = () => {
+    UniversalDashboard.publish("element-event", {
+      type: "clientEvent",
+      eventId: this.props.id + "onClick",
+      eventName: "onClick",
+      eventData: ""
+    });
+  };
+
+
+  render() {
+    return (
+      <ParticleEffectButton
+        color='#121019'
+        hidden={this.state.hidden}
+      >
+        <Ripples>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={this.handleClick.bind(this)}
+            id={this.props.id}>
+            Submit
+            </button>
+        </Ripples>
+      </ParticleEffectButton>
+    )
+
+  }
+}
+
+export default UDButtonParticle

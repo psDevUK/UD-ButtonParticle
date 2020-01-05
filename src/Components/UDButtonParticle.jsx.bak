@@ -1,0 +1,29 @@
+import React from 'react';
+import ParticleEffectButton from 'react-particle-effect-button';
+
+class UDButtonParticle extends React.Component {
+
+  // state is for keeping control state before or after changes.
+  state = {
+    hidden: false
+  }
+
+
+  render() {
+
+    // These props are returned from PowerShell!
+    // return <h1>{this.state.text}</h1> // un comment the line to render using value from state.
+
+    return (
+      <ParticleEffectButton
+        color='#121019'
+        hidden={this.state.hidden}
+      >
+        BUTTON CONTENT GOES HERE
+      </ParticleEffectButton>
+    )
+
+  }
+}
+
+export default UDButtonParticle
